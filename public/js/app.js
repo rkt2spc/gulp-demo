@@ -1,5 +1,16 @@
-var printMessage = function () {
+var app = angular.module('app', []);
 
-	var msg = document.getElementById('message').value;
-	window.alert(msg)
-}
+app.controller('messagePrintingCtrl', ['$scope',
+	function($scope) {
+		$scope.message = 'hahaha';
+
+		$scope.printMessage = function() {
+			window.alert($scope.message);
+		}
+	}
+])
+
+app.component('messagePrinting', {
+	templateUrl: '/partials/message.html',
+	controller: 'messagePrintingCtrl'
+})
