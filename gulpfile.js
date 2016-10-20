@@ -1,27 +1,5 @@
-var gulp = require('gulp');
-
-//***************************************************
-// PLUGINS
-//***************************************************
-var jshint = require('gulp-jshint'), //Check js for error
-
-	imagemin = require('gulp-imagemin'), //Compile image
-
-	concat = require('gulp-concat'), //Concat multiple files into one
-
-	stripDebug = require('gulp-strip-debug'), //Remove comments and things like window.alert and console.log
-	uglify = require('gulp-uglify'), //Compile javascript
-
-	changed = require('gulp-changed'), //Only pass through file that changed
-
-	minifyHtml = require('gulp-minify-html'), //Compile HTML
-
-	autoprefixer = require('gulp-autoprefixer'), //Prefix CSS attribute with browser-specific tag -moz,...
-	minifyCss = require('gulp-minify-css'), //Compile CSS
-
-	clean = require('gulp-clean'), //Clean Directory
-
-    nodemon = require('gulp-nodemon');
+var gulp = require('gulp'),
+    plugins = require('gulp-load-plugins')();
 
 //***************************************************
 // JAVASCRIPT
@@ -31,15 +9,15 @@ var jsSrc = './public/src/js/**/*.js',
 
 gulp.task('check-js', function() {
 	gulp.src(jsSrc)
-		.pipe(jshint({esversion: 6}))
-		.pipe(jshint.reporter('default'));
+		.pipe(plugins.jshint({esversion: 6}))
+		.pipe(plugins.jshint.reporter('default'));
 });
 
 gulp.task('build-js', function() {
     gulp.src(jsSrc)
-        .pipe(concat('app.js'))
+        .pipe(plugins.concat('app.js'))
         // .pipe(stripDebug())
-        .pipe(uglify())
+        .pipe(plugins.uglify())
         .pipe(gulp.dest(jsDst));
 });
 
@@ -51,8 +29,8 @@ var imgSrc = './public/src/images/**/*.{gif,jpeg,jpg,png,svg}',
 
 gulp.task('build-img', function() {
     gulp.src(imgSrc)
-        .pipe(changed(imgDst))
-        .pipe(imagemin())
+        .pipe(plugins.changed(imgDst))
+        .pipe(plugins.imagemin())
         .pipe(gulp.dest(imgDst));
 });
 
@@ -64,8 +42,8 @@ var htmlSrc = './public/src/**/*.{htm,html}',
 
 gulp.task('build-html', function() {
     gulp.src(htmlSrc)
-        .pipe(changed(htmlDst))
-        .pipe(minifyHtml())
+        .pipe(plugins.changed(htmlDst))
+        .pipe(plugins.minifyHtml())
         .pipe(gulp.dest(htmlDst));
 });
 
@@ -77,9 +55,9 @@ var cssSrc = './public/src/css/**/*.css',
 
 gulp.task('build-css', function() {
     gulp.src(cssSrc)
-        .pipe(concat('app.css'))
-        .pipe(autoprefixer('last 2 versions'))
-        .pipe(minifyCss())
+        .pipe(plugins.concat('app.css'))
+        .pipe(plugins.autoprefixer('last 2 versions'))
+        .pipe(plugins.minifyCss())
         .pipe(gulp.dest(cssDst));
 });
 
@@ -90,17 +68,15 @@ var cleanSrc = './public/build';
 
 gulp.task('clean', function(done) {
     return gulp.src(cleanSrc)
-        .pipe(clean({read: false}));
+        .pipe(plugins.clean({read: false}));
 });
 
 //***************************************************
 // BUILD
 //***************************************************
 gulp.task('build',                  ['build-img', 'build-html', 'build-js', 'build-css']);
-gulp.task('debug-build',            ['debug-build-img', 'debug-build-html', 'debug-build-js', 'debug-build-css']);
 
 gulp.task('clean-build',            ['clean'],  () => gulp.start('build'));
-gulp.task('clean-debug-build',      ['clean'],  () => gulp.start('debug-build'));
 
 //***************************************************
 // WATCH
@@ -117,7 +93,7 @@ gulp.task('watch', function() {
 //***************************************************
 gulp.task('nodemon', ['clean-build', 'watch'], function() {
 
-    var nm = nodemon({
+    var nodemon = plugins.nodemon({
         script: 'index.js',
         watch: ['.'],
         ignore: ['./public', 'gulpfile.js'],
@@ -125,9 +101,9 @@ gulp.task('nodemon', ['clean-build', 'watch'], function() {
         env: { 'NODE_ENV': 'development' }
     });
 
-    nm.on('crash', function() {
+    nodemon.on('crash', function() {
         var delay = 3;
-        nm.emit('restart', delay);
+        nodemon.emit('restart', delay);
     });
 });
 
