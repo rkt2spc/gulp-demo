@@ -100,6 +100,20 @@ gulp.task('debug-build',            ['debug-build-img', 'debug-build-html', 'deb
 gulp.task('clean-build',            ['clean'],  () => gulp.start('build'));
 gulp.task('clean-debug-build',      ['clean'],  () => gulp.start('debug-build'));
 
+//***************************************************
+// WATCH
+//***************************************************
+gulp.task('watch', function() {
+    gulp.watch(imgSrc,  ['build-img']);
+    gulp.watch(htmlSrc, ['build-html']);
+    gulp.watch(jsSrc,   ['build-js']);
+    gulp.watch(cssSrc,  ['build-css']);
+});
+
+//***************************************************
+// DEFAULT
+//***************************************************
+gulp.task('default', ['build', 'watch']);
 
 
 
