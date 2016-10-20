@@ -19,7 +19,9 @@ var jshint = require('gulp-jshint'), //Check js for error
 	autoprefixer = require('gulp-autoprefixer'), //Prefix CSS attribute with browser-specific tag -moz,...
 	minifyCss = require('gulp-minify-css'), //Compile CSS
 
-	clean = require('gulp-clean'); //Clean Directory
+	clean = require('gulp-clean'), //Clean Directory
+
+    nodemon = require('gulp-nodemon');
 
 //***************************************************
 // JAVASCRIPT
@@ -108,6 +110,25 @@ gulp.task('watch', function() {
     gulp.watch(htmlSrc, ['build-html']);
     gulp.watch(jsSrc,   ['build-js']);
     gulp.watch(cssSrc,  ['build-css']);
+});
+
+//***************************************************
+// NODEMON
+//***************************************************
+gulp.task('nodemon', ['clean-build', 'watch'], function() {
+
+    var nm = nodemon({
+        script: 'index.js',
+        watch: ['.'],
+        ignore: ['./public', 'gulpfile.js'],
+        ext: 'js',
+        env: { 'NODE_ENV': 'development' }
+    });
+
+    nm.on('crash', function() {
+        var delay = 3;
+        nm.emit('restart', delay);
+    });
 });
 
 //***************************************************
