@@ -1,0 +1,8 @@
+Justin Rexroad - 'Automate your tasks easily with Gulp.js' Blog on scotch.io
+https://scotch.io/tutorials/automate-your-tasks-easily-with-gulp-js
+
+gulp manual on npm
+https://www.npmjs.com/package/gulp
+
+gulp docs on github
+https://github.com/gulpjs/gulp/tree/master/docs
